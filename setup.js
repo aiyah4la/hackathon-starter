@@ -3,14 +3,6 @@ var os = require('os');
 var blessed = require('blessed');
 var multiline = require('multiline');
 
-if (os.platform() === 'win32') {
-  console.log('**************************************************************');
-  console.log('Hackathon Starter Generator has been disabled on Windows until');
-  console.log('https://github.com/chjj/blessed fixes the issue #179.');
-  console.log('**************************************************************');
-  process.exit();
-}
-
 var screen = blessed.screen({
   autoPadding: true
 });
@@ -40,7 +32,7 @@ var homeTitle = blessed.text({
   align: 'center',
   fg: 'blue',
   bg: 'white',
-  content: 'Hackathon Starter (c) 2014'
+  content: 'Hackathon Starter (c) 2014-2016'
 });
 
 var footer = blessed.text({
@@ -200,18 +192,18 @@ emailForm.on('submit', function() {
 
   var index = contactCtrl.indexOf('var transporter = nodemailer.createTransport({');
   contactCtrl.splice(index + 1, 1, "  service: '" + choice + "',");
-  contactCtrl.splice(index + 3, 1, '    user: secrets.' + choice.toLowerCase() +'.user,');
-  contactCtrl.splice(index + 4, 1, '    pass: secrets.' + choice.toLowerCase() + '.password');
+  contactCtrl.splice(index + 3, 1, '    user: process.env.' + choice.toUpperCase() +'_USER,');
+  contactCtrl.splice(index + 4, 1, '    pass: process.env.' + choice.toUpperCase() + '_PASSWORD');
   fs.writeFileSync('controllers/contact.js', contactCtrl.join(os.EOL));
 
   index = userCtrl.indexOf('      var transporter = nodemailer.createTransport({');
   userCtrl.splice(index + 1, 1, "        service: '" + choice + "',");
-  userCtrl.splice(index + 3, 1, '          user: secrets.' + choice.toLowerCase() + '.user,');
-  userCtrl.splice(index + 4, 1, '          pass: secrets.' + choice.toLowerCase() + '.password');
+  userCtrl.splice(index + 3, 1, '          user: process.env.' + choice.toUpperCase() +'_USER,');
+  userCtrl.splice(index + 4, 1, '          pass: process.env.' + choice.toUpperCase() + '_PASSWORD');
   index = userCtrl.indexOf('      var transporter = nodemailer.createTransport({', (index + 1));
   userCtrl.splice(index + 1, 1, "        service: '" + choice + "',");
-  userCtrl.splice(index + 3, 1, '          user: secrets.' + choice.toLowerCase() + '.user,');
-  userCtrl.splice(index + 4, 1, '          pass: secrets.' + choice.toLowerCase() + '.password');
+  userCtrl.splice(index + 3, 1, '          user: process.env.' + choice.toUpperCase() +'_USER,');
+  userCtrl.splice(index + 4, 1, '          pass: process.env.' + choice.toUpperCase() + '_PASSWORD');
   fs.writeFileSync('controllers/user.js', userCtrl.join(os.EOL));
 
   home.remove(emailForm);
